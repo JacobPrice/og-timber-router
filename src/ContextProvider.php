@@ -25,8 +25,15 @@ class ContextProvider implements ContextProviderInterface
         $templates = (Hierarchy::instance())->templates() ?? [];
 
         $templates = array_map(function ($template) {
+            if($template == '404') {
+                return $this->format_for_class_name('PageNotFound');
+            }
             return $this->format_for_class_name($template);
         }, $templates);
+
+        $templates = apply_filters('og/templateloader/contextmap', $templates);
+
+
 
         $mapped_context = [];
 
