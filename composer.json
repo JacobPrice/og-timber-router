@@ -1,0 +1,19 @@
+{
+    "name": "jacobprice/og-timber-router",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Og\\TimberHierarchy\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jacobprice",
+            "email": "jacobprice@protonmail.com"
+        }
+    ],
+    "require": {
+        "timber/timber": "^2.2",
+        "brain/hierarchy": "^3.2"
+    }
+}
