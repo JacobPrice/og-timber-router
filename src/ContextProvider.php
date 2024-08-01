@@ -14,7 +14,7 @@ class ContextProvider implements ContextProviderInterface
 
     public function get_context(): array
     {
-
+        $global_context = Timber::context();
         if (!isset($this->config['context_dir'])) {
             return Timber::context();
         }
@@ -39,6 +39,13 @@ class ContextProvider implements ContextProviderInterface
 
         foreach($context_files as $file) {
             $file_name = $file->getBasename('.php');
+            if($file_name === 'Global') {
+                $context = include $file->getPathname();
+                if(is_array($context)) {
+                    array_merge($global_context, $context);
+                }
+                continue;
+            }
             $mapped_context[$file_name] = $file->getPathname();
         }
 
