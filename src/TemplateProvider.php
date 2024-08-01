@@ -1,20 +1,30 @@
 <?php
 
-namespace Og\TimberHierarchy;
+namespace Og\TemplateLoader;
 
-use Brain\Hierarchy\Hierarchy;
-use Og\TimberHierarchy\TemplateProviderInterface;
+use Og\TemplateLoader\Hierarchy;
+use Og\TemplateLoader\TemplateProviderInterface;
 
 class TemplateProvider implements TemplateProviderInterface {
-    public function __construct() {
+    public function __construct(private array $config = []) {
     }
 
     public function get_template(): array {
-        global $wp_query;
-        $hierarchy = new Hierarchy();
-        $templates =  $hierarchy->templates($wp_query) ?? [];
-        return array_map(function($template) {
+        $hierarchy = Hierarchy::instance();
+        $templates =  $hierarchy->templates() ?? [];
+        $templates = array_map(function($template) {
             return $template . '.twig';
         }, $templates);
+
+        if(!isset($this->config['template_dir'])) {
+            return $templates;
+        }
+        $template_dir = $this->config['template_dir'];
+
+        $templates = array_map(function($template) use ($template_dir) {
+            return $template_dir . '/' . $template;
+        }, $templates);
+
+        return $templates;
     }
 }

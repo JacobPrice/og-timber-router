@@ -1,6 +1,6 @@
 <?php
 
-namespace Og\TimberHierarchy;
+namespace Og\TemplateLoader;
 
 interface TemplateProviderInterface {
     public function get_template(): array;

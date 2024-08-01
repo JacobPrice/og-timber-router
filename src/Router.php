@@ -1,20 +1,21 @@
 <?php
 
-namespace Og\TimberHierarchy;
+namespace Og\TemplateLoader;
 
 use Timber\Timber;
 
-use Og\TimberHierarchy\ContextProvider;
-use Og\TimberHierarchy\ContextProviderInterface;
-use Og\TimberHierarchy\TemplateProviderInterface;
+use Og\TemplateLoader\ContextProvider;
+use Og\TemplateLoader\ContextProviderInterface;
+use Og\TemplateLoader\TemplateProviderInterface;
 
 class Router
 {
-    public function __construct(private ?ContextProviderInterface $context_provider = null, private ?TemplateProviderInterface $template_provider = null)
+    public function __construct(private array $config = [], private ?ContextProviderInterface $context_provider = null, private ?TemplateProviderInterface $template_provider = null)
     {
-        $this->context_provider ??= new ContextProvider();
-        $this->template_provider ??= new TemplateProvider();
+        $this->context_provider ??= new ContextProvider($this->config);
+        $this->template_provider ??= new TemplateProvider($this->config);
     }
+
     public function get_context(): array
     {
         return $this->context_provider->get_context();
