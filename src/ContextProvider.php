@@ -24,24 +24,15 @@ class ContextProvider implements ContextProviderInterface
         $context_files = new \FilesystemIterator($context_dir);
         $templates = (Hierarchy::instance())->templates() ?? [];
 
-        $templates = array_map(function ($template) {
-            if($template == '404') {
-                return $this->format_for_class_name('PageNotFound');
-            }
-            return $this->format_for_class_name($template);
-        }, $templates);
-
         $templates = apply_filters('og/templateloader/contextmap', $templates);
-
-
 
         $mapped_context = [];
 
-        foreach($context_files as $file) {
+        foreach ($context_files as $file) {
             $file_name = $file->getBasename('.php');
-            if($file_name === 'Global') {
+            if ($file_name === 'global') {
                 $context = include $file->getPathname();
-                if(is_array($context)) {
+                if (is_array($context)) {
                     array_merge($global_context, $context);
                 }
                 continue;
@@ -49,10 +40,10 @@ class ContextProvider implements ContextProviderInterface
             $mapped_context[$file_name] = $file->getPathname();
         }
 
-        foreach($templates as $template) {
-            if(array_key_exists($template, $mapped_context)) {
+        foreach ($templates as $template) {
+            if (array_key_exists($template, $mapped_context)) {
                 $context = include $mapped_context[$template];
-                if(!is_array($context)) {
+                if (!is_array($context)) {
                     continue;
                 }
                 return array_merge(Timber::context(), $context);
@@ -61,24 +52,4 @@ class ContextProvider implements ContextProviderInterface
 
         return Timber::context();
     }
-
-
-    /**
-     * format_for_class_name
-     *
-     * Converts a template name to a class name
-     * example: page-home -> PageHome
-     * example: archive-tribe_events -> ArchiveTribeEvents
-     *
-     * @param  string $template
-     * @return string
-     */
-    public function format_for_class_name($template)
-    {
-        $template = str_replace('_', '-', $template);
-        $parts = explode('-', $template);
-        $parts = array_map('ucfirst', $parts);
-        return implode('', $parts);
-    }
-
 }
